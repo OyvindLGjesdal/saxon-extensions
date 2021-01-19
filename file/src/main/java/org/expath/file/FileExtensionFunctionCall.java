@@ -20,6 +20,7 @@ package org.expath.file;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Paths;
 
 import nl.armatiek.saxon.extensions.core.ExtensionFunctionCallBase;
 
@@ -32,7 +33,7 @@ import nl.armatiek.saxon.extensions.core.ExtensionFunctionCallBase;
 public abstract class FileExtensionFunctionCall extends ExtensionFunctionCallBase {
 
   protected File getFile(String path) throws URISyntaxException {
-    return (path.startsWith("file:")) ? new File(new URI(path)) : new File(path);
+    return (path.startsWith("file:")) ? new File(new URI(path)) :  Paths.get(path).toFile();
   }
 
 }
