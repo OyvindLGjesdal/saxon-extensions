@@ -17,7 +17,7 @@ package org.expath.file;
  * limitations under the License.
  */
 
-import java.io.File;
+import java.nio.file.*;
 
 import org.expath.file.error.FileException;
 
@@ -80,8 +80,7 @@ public class IsFile extends FileFunctionDefinition {
     @Override
     public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {      
       try {
-        File file = getFile(((StringValue) arguments[0].head()).getStringValue());                                       
-        return BooleanValue.get(file.isFile());        
+        return BooleanValue.get(Files.isRegularFile(Paths.get(arguments[0].head().getStringValue())));
       } catch (Exception e) {
         throw new FileException("Other file error", e, FileException.ERROR_IO);
       }

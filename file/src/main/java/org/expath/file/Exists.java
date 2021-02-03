@@ -18,6 +18,9 @@ package org.expath.file;
  */
 
 import java.io.File;
+import  java.nio.file.Path;
+import  java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.expath.file.error.FileException;
 
@@ -80,8 +83,8 @@ public class Exists extends FileFunctionDefinition {
     @Override
     public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {      
       try {
-        File file = getFile(((StringValue) arguments[0].head()).getStringValue());                                       
-        return BooleanValue.get(file.exists());        
+       // File file = getFile(((StringValue) arguments[0].head()).getStringValue());
+        return BooleanValue.get(Files.exists(Paths.get(arguments[0].head().getStringValue())));
       } catch (Exception e) {
         throw new FileException("Other file error", e, FileException.ERROR_IO);
       }

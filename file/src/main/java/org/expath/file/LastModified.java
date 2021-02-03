@@ -16,8 +16,10 @@ package org.expath.file;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import java.io.File;
+import  java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -83,14 +85,13 @@ public class LastModified extends FileFunctionDefinition {
         
     @Override
     public DateTimeValue call(XPathContext context, Sequence[] arguments) throws XPathException {      
-      try {                        
-        File file = getFile(((StringValue) arguments[0].head()).getStringValue());
-        if (!file.exists()) {
-          throw new FileException(String.format("Path \"%s\" does not exist", 
-              file.getAbsolutePath()), FileException.ERROR_PATH_NOT_EXIST);         
-        }      
+      try {
+        Path path = Paths.get(arguments[0].head().getStringValue());
+        //File file = getFile(((StringValue) arguments[0].head()).getStringValue());
+        if (!Files.exists(path)) throw new FileException(String.format("Path \"%s\" does not exist",
+                path.toAbsolutePath()), FileException.ERROR_PATH_NOT_EXIST);
         Calendar cal = Calendar.getInstance();        
-        cal.setTime(new Date(file.lastModified()));                 
+        cal.setTime(new Date(Files.getLastModifiedTime(path).toMillis()));
         return new DateTimeValue(cal, false);
       } catch (FileException fe) {
         throw fe;
