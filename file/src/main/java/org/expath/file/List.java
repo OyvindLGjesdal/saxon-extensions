@@ -17,12 +17,13 @@ package org.expath.file;
  * limitations under the License.
  */
 
-import java.io.File;
+//import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.PathMatcher;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -144,12 +145,12 @@ public class List extends FileFunctionDefinition {
     @Override
     public ZeroOrMore<StringValue> call(XPathContext context, Sequence[] arguments) throws XPathException {      
       try {         
-        File dir = getFile(((StringValue) arguments[0].head()).getStringValue());
-        if (!dir.isDirectory()) {
-          throw new FileException(String.format("Path \"%s\" does not point to an existing directory", 
-              dir.getAbsolutePath()), FileException.ERROR_PATH_NOT_DIRECTORY);         
+        Path rootPath = Paths.get(arguments[0].head().getStringValue()).toAbsolutePath();
+        if (!Files.isDirectory(rootPath)) {
+          throw new FileException(String.format("Path \"%s\" does not point to an existing directory",
+                  rootPath), FileException.ERROR_PATH_NOT_DIRECTORY);
         }
-        Path rootPath = dir.toPath();
+        //Path rootPath = path.toAbsolutePath();
         boolean recursive = false;
         if (arguments.length > 1) {
           recursive = ((BooleanValue) arguments[1].head()).getBooleanValue();
@@ -159,7 +160,7 @@ public class List extends FileFunctionDefinition {
           pattern = ((StringValue) arguments[2].head()).getStringValue();          
         }               
         Finder finder = new Finder(rootPath, recursive, pattern);
-        Files.walkFileTree(dir.toPath(), finder);
+        Files.walkFileTree(rootPath, finder);
        
         ArrayList<StringValue> result = new ArrayList<StringValue>();
         for (Path path : finder.getPaths()) {                                                           
@@ -169,7 +170,7 @@ public class List extends FileFunctionDefinition {
       } catch (FileException fe) {
         throw fe;
       } catch (Exception e) {
-        throw new FileException("Other file error", e, FileException.ERROR_IO);
+        throw new  FileException("Other file error", e, FileException.ERROR_IO);
       }
     } 
   }
