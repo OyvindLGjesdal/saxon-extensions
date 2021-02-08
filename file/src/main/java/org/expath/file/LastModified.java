@@ -90,9 +90,7 @@ public class LastModified extends FileFunctionDefinition {
         //File file = getFile(((StringValue) arguments[0].head()).getStringValue());
         if (!Files.exists(path)) throw new FileException(String.format("Path \"%s\" does not exist",
                 path.toAbsolutePath()), FileException.ERROR_PATH_NOT_EXIST);
-        Calendar cal = Calendar.getInstance();        
-        cal.setTime(new Date(Files.getLastModifiedTime(path).toMillis()));
-        return new DateTimeValue(cal, false);
+        return DateTimeValue.fromJavaTime(Files.getLastModifiedTime(path).toMillis());
       } catch (FileException fe) {
         throw fe;
       } catch (Exception e) {
