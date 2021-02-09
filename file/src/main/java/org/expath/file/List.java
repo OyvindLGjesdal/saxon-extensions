@@ -144,11 +144,12 @@ public class List extends FileFunctionDefinition {
         
     @Override
     public ZeroOrMore<StringValue> call(XPathContext context, Sequence[] arguments) throws XPathException {      
-      try {         
-        Path rootPath = Paths.get(arguments[0].head().getStringValue()).toAbsolutePath();
-        if (!Files.isDirectory(rootPath)) {
+
+      try {
+        Path file = Paths.get(arguments[0].head().getStringValue()).toAbsolutePath();
+        if (!Files.isDirectory(file)) {
           throw new FileException(String.format("Path \"%s\" does not point to an existing directory",
-                  rootPath), FileException.ERROR_PATH_NOT_DIRECTORY);
+                  file.toAbsolutePath()), FileException.ERROR_PATH_NOT_DIRECTORY);
         }
         //Path rootPath = path.toAbsolutePath();
         boolean recursive = false;
@@ -159,12 +160,12 @@ public class List extends FileFunctionDefinition {
         if (arguments.length > 2) {
           pattern = ((StringValue) arguments[2].head()).getStringValue();          
         }               
-        Finder finder = new Finder(rootPath, recursive, pattern);
-        Files.walkFileTree(rootPath, finder);
+        Finder finder = new Finder(file, recursive, pattern);
+        Files.walkFileTree(file, finder);
        
         ArrayList<StringValue> result = new ArrayList<StringValue>();
         for (Path path : finder.getPaths()) {                                                           
-          result.add(new StringValue(rootPath.relativize(path).toString()));
+          result.add(new StringValue(path.relativize(file).toString()));
         }
         return new ZeroOrMore<StringValue>(result.toArray(new StringValue[result.size()]));
       } catch (FileException fe) {

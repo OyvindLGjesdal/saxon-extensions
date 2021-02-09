@@ -20,6 +20,7 @@ import  java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -86,11 +87,9 @@ public class LastModified extends FileFunctionDefinition {
     @Override
     public DateTimeValue call(XPathContext context, Sequence[] arguments) throws XPathException {      
       try {
-        Path path = Paths.get(arguments[0].head().getStringValue());
-        //File file = getFile(((StringValue) arguments[0].head()).getStringValue());
-        if (!Files.exists(path)) throw new FileException(String.format("Path \"%s\" does not exist",
-                path.toAbsolutePath()), FileException.ERROR_PATH_NOT_EXIST);
-        return DateTimeValue.fromJavaTime(Files.getLastModifiedTime(path).toMillis());
+        final Path path = Paths.get(arguments[0].head().getStringValue());
+        final BasicFileAttributes attributes = Files.readAttributes(path, BasicFileAttributes.class);
+        return DateTimeValue.fromJavaTime(attributes.lastModifiedTime().toMillis());
       } catch (FileException fe) {
         throw fe;
       } catch (Exception e) {
