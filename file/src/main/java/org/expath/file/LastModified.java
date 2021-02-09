@@ -89,7 +89,7 @@ public class LastModified extends FileFunctionDefinition {
       try {
         final Path path = Paths.get(arguments[0].head().getStringValue());
         final BasicFileAttributes attributes = Files.readAttributes(path, BasicFileAttributes.class);
-        return DateTimeValue.fromJavaTime(attributes.lastModifiedTime().toMillis());
+        return DateTimeValue.fromJavaTime(attributes.lastModifiedTime() .toMillis());
       } catch (FileException fe) {
         throw fe;
       } catch (Exception e) {

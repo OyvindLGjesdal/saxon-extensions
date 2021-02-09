@@ -90,11 +90,12 @@ public class List extends FileFunctionDefinition {
   
   private static class Finder extends SimpleFileVisitor<Path> {
 
-    private ArrayList<Path> paths = new ArrayList<Path>();
+    private final ArrayList<StringValue> stringValues = new ArrayList<>();
+
     private final PathMatcher matcher;
     private final boolean recursive;
     private final Path root;
-   
+
     public Finder(Path root, boolean recursive, String pattern) {
       this.root = root;
       this.recursive = recursive;
@@ -108,7 +109,10 @@ public class List extends FileFunctionDefinition {
     private void match(Path file) {
       Path name = file.getFileName();
       if (name != null && (matcher == null || matcher.matches(name))) {
-        paths.add(file);
+        if (file.isAbsolute()) {
+          file = root.relativize(file);
+        }
+        stringValues.add(StringValue.makeStringValue(file.toString()));
       }
     }
         
@@ -135,8 +139,12 @@ public class List extends FileFunctionDefinition {
       return FileVisitResult.CONTINUE;
     }
     
-    public ArrayList<Path> getPaths() {
-      return this.paths;
+   // public ArrayList<Path> getPaths() {
+   //   return this.paths;
+   // }
+
+    public ArrayList<StringValue> getStringValues() {
+      return this.stringValues;
     }
   }
   
@@ -146,7 +154,7 @@ public class List extends FileFunctionDefinition {
     public ZeroOrMore<StringValue> call(XPathContext context, Sequence[] arguments) throws XPathException {      
 
       try {
-        Path file = Paths.get(arguments[0].head().getStringValue()).toAbsolutePath();
+        Path file = Paths.get(arguments[0].head().getStringValue());
         if (!Files.isDirectory(file)) {
           throw new FileException(String.format("Path \"%s\" does not point to an existing directory",
                   file.toAbsolutePath()), FileException.ERROR_PATH_NOT_DIRECTORY);
@@ -158,16 +166,12 @@ public class List extends FileFunctionDefinition {
         }
         String pattern = null;
         if (arguments.length > 2) {
-          pattern = ((StringValue) arguments[2].head()).getStringValue();          
-        }               
+          pattern = ( arguments[2].head()).getStringValue();
+        }
         Finder finder = new Finder(file, recursive, pattern);
         Files.walkFileTree(file, finder);
-       
-        ArrayList<StringValue> result = new ArrayList<StringValue>();
-        for (Path path : finder.getPaths()) {                                                           
-          result.add(new StringValue(path.relativize(file).toString()));
-        }
-        return new ZeroOrMore<StringValue>(result.toArray(new StringValue[result.size()]));
+        ArrayList<StringValue> result = finder.getStringValues();
+        return new ZeroOrMore<>(finder.getStringValues().toArray(new StringValue[result.size()]));
       } catch (FileException fe) {
         throw fe;
       } catch (Exception e) {
