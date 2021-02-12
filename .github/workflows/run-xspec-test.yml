@@ -22,6 +22,6 @@ jobs:
     - run: cp file/target/*uber.jar $SAXON_HOME/lib/
     - run: ls $SAXON_HOME $XSPEC_HOME
     - run: cd $XSPEC_HOME && ant -lib $SAXON_HOME -lib $SAXON_HOME/lib -Dxspec.xml=$GITHUB_WORKSPACE/xspec/file.xspec -Dsaxon.custom.options="-config:$GITHUB_WORKSPACE/xspec/config.xml"
-    - run: "cd $GITHUB_WORKSPACE && git checkout -b gh-pages && git add "/home/runner/work/saxon-extensions/saxon-extensions/xspec/xspec/file-result.html" && git commit -m "add error report" && git push
+    - run: cd $GITHUB_WORKSPACE && git checkout -b gh-pages && git add /home/runner/work/saxon-extensions/saxon-extensions/xspec/xspec/file-result.html" && git commit -m "add error report" && git push
       if: ${{ cancelled() }}
 
