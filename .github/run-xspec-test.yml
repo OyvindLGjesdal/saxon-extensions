@@ -5,4 +5,4 @@ jobs:
     runs_on: oyvindlg/gitlab-ci-library:xmldev
     steps:
     - uses: actions/checkout@v2
-    - run ls -alh
+    - run: ls -alh
