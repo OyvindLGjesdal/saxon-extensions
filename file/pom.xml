@@ -10,6 +10,7 @@
   <description>EXPath - File implementation for the Saxon XSLT processor</description>
   <url>https://github.com/Armatiek/saxon-extensions</url>
   <artifactId>saxon-ext-file</artifactId>
+  <version>1.4-SNAPSHOT</version>
   <packaging>jar</packaging>
   
   <parent>
