@@ -17,7 +17,7 @@ jobs:
       with:
         java-version: 11
     - run: mvn package
-    - cd /opt/
-    - git checkout https://github.com/xspec/xspec.git 
-    - mkdir $SAXON_HOME && cd $SAXON_HOME
-    - curl -o $SAXON_FILENAME https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/${SAXON_VERSION}/Saxon-HE-${SAXON_VERSION}.jar
+    - run: cd /opt/
+    - run: git checkout https://github.com/xspec/xspec.git 
+    - run: mkdir $SAXON_HOME && cd $SAXON_HOME
+    - run: curl -o $SAXON_FILENAME https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/${SAXON_VERSION}/Saxon-HE-${SAXON_VERSION}.jar
