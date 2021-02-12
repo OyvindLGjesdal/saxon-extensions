@@ -1,6 +1,6 @@
 <x:description xmlns:file="http://expath.org/ns/file" xmlns:x="http://www.jenitennison.com/xslt/xspec" stylesheet="dummy.xsl" xslt-version="3"> 
     <x:param href="dummy.xml" name="global-context-item"/>
-    <x:param name="base-uri" select="string-join(tokenize(base-uri())[position()=1 to last()-1],'/')"/>
+    <x:param name="base-uri" select=""/>
     <x:scenario label="Testing functions in epxath file library">
        
         <x:scenario label="file:list">
@@ -8,7 +8,7 @@
             <x:scenario label="empty param">
                 
                 <x:call function="file:list">
-                    <x:param select="$base-uri || 'resources'"/>
+                    <x:param select="'/home/runner/work/saxon-extensions/saxon-extensions/xspec/resources'"/>
                     <x:param select="true()"/>
                     <x:param select="'*txt'"/>
                 </x:call>
