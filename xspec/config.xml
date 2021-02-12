@@ -1,0 +1,39 @@
+<configuration xmlns="http://saxon.sf.net/ns/configuration" edition="HE">
+    <!--<global traceExternalFunctions="true"/>-->
+    <resources>
+        <!-- Expath File -->
+   	 <extensionFunction>org.expath.file.ResolvePath</extensionFunction>
+        <extensionFunction>org.expath.file.Append</extensionFunction>
+        <extensionFunction>org.expath.file.AppendBinary</extensionFunction>
+        <extensionFunction>org.expath.file.AppendText</extensionFunction>
+        <extensionFunction>org.expath.file.AppendTextLines</extensionFunction>
+        <extensionFunction>org.expath.file.Children</extensionFunction>
+        <extensionFunction>org.expath.file.Copy</extensionFunction>
+        <extensionFunction>org.expath.file.CreateDir</extensionFunction>
+        <extensionFunction>org.expath.file.CreateTempDir</extensionFunction>
+        <extensionFunction>org.expath.file.CreateTempFile</extensionFunction>
+        <extensionFunction>org.expath.file.Delete</extensionFunction>
+        <extensionFunction>org.expath.file.DirName</extensionFunction>               
+        <extensionFunction>org.expath.file.DirSeparator</extensionFunction>        
+        <extensionFunction>org.expath.file.Exists</extensionFunction>
+        <extensionFunction>org.expath.file.IsDir</extensionFunction>
+        <extensionFunction>org.expath.file.IsFile</extensionFunction>
+        <extensionFunction>org.expath.file.LastModified</extensionFunction>
+        <extensionFunction>org.expath.file.LineSeparator</extensionFunction>
+        <extensionFunction>org.expath.file.List</extensionFunction>
+        <extensionFunction>org.expath.file.Move</extensionFunction>
+        <extensionFunction>org.expath.file.Parent</extensionFunction>
+        <extensionFunction>org.expath.file.PathSeparator</extensionFunction>
+        <extensionFunction>org.expath.file.PathToNative</extensionFunction>
+        <extensionFunction>org.expath.file.PathToURI</extensionFunction>
+        <extensionFunction>org.expath.file.ReadBinary</extensionFunction>
+        <extensionFunction>org.expath.file.ReadText</extensionFunction>
+        <extensionFunction>org.expath.file.ReadTextLines</extensionFunction>
+        <extensionFunction>org.expath.file.ResolvePath</extensionFunction>
+        <extensionFunction>org.expath.file.Size</extensionFunction>
+        <extensionFunction>org.expath.file.TempDir</extensionFunction>
+        <extensionFunction>org.expath.file.Write</extensionFunction>
+        <extensionFunction>org.expath.file.WriteText</extensionFunction>
+        <extensionFunction>org.expath.file.WriteTextLines</extensionFunction>
+    </resources>
+</configuration>
