@@ -1,5 +1,5 @@
 <x:description xmlns:file="http://expath.org/ns/file" xmlns:x="http://www.jenitennison.com/xslt/xspec" stylesheet="dummy.xsl" xslt-version="3"> 
-    <x:param name="base-uri" select="string-join(tokenize(base-uri(/),'/')[position()1 to last()-1],'/')"/>
+    <x:param name="base-uri" select="string-join(tokenize(base-uri(/),'/')[position()=1 to last()-1],'/')"/>
     <x:scenario label="Testing functions in epxath file library">
        
         <x:scenario label="file:list">
