@@ -2,7 +2,7 @@ name: run-xpsec-test
 on: [push]
 jobs:
   test:
-    runs_on: oyvindlg/gitlab-ci-library:xmldev
+    runs-on: oyvindlg/gitlab-ci-library:xmldev
     steps:
     - uses: actions/checkout@v2
     - run: ls -alh
