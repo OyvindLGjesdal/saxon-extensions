@@ -1,11 +1,9 @@
 <x:description xmlns:file="http://expath.org/ns/file" xmlns:x="http://www.jenitennison.com/xslt/xspec" stylesheet="dummy.xsl" xslt-version="3"> 
-    <x:param href="dummy.xml" name="global-context-item"/>
-    <x:param name="base-uri" select=""/>
-    <x:scenario label="Testing functions in epxath file library">
+     <x:scenario label="Testing functions in epxath file library">
        
         <x:scenario label="file:list">
             
-            <x:scenario label="empty param">
+            <x:scenario label="use absolute path to resources as input for">
                 
                 <x:call function="file:list">
                     <x:param select="'/home/runner/work/saxon-extensions/saxon-extensions/xspec/resources'"/>
@@ -14,6 +12,8 @@
                 </x:call>
                 <x:expect label="empty param is false" select="false()"/>
             </x:scenario>
+            
+          
         </x:scenario>
     </x:scenario>
     
