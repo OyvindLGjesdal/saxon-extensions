@@ -1,9 +1,9 @@
 <x:description xmlns:file="http://expath.org/ns/file" xmlns:x="http://www.jenitennison.com/xslt/xspec" stylesheet="dummy.xsl" xslt-version="3"> 
-    <x:scenario label="Testing functions in ubbef UUID library">
+    <x:scenario label="Testing functions in epxath file library">
         <x:scenario label="file:list">
             <x:scenario label="empty param">
                 <x:call function="file:list">
-                    <x:param select="''"/>
+                    <x:param select="'resources'"/>
                     <x:param select="true()"/>
                     <x:param select="'*txt'"/>
                 </x:call>
