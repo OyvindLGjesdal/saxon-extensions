@@ -136,9 +136,9 @@ public class List extends FileFunctionDefinition {
 
     @Override
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-      if (dir.equals(root)) {
-        return FileVisitResult.CONTINUE;
-      }
+   //   if (dir.equals(root)) {
+   //     return FileVisitResult.CONTINUE;
+    //  }
       match(dir);
       if (recursive) {
         return FileVisitResult.CONTINUE;
