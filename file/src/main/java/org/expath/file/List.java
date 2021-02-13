@@ -149,7 +149,7 @@ public class List extends FileFunctionDefinition {
           throw new FileException(String.format("Path \"%s\" does not point to an existing directory", 
               dir.getAbsolutePath()), FileException.ERROR_PATH_NOT_DIRECTORY);         
         }
-        Path rootPath = dir.toPath();
+        Path rootPath = dir.toPath().toAbsolutePath();
         boolean recursive = false;
         if (arguments.length > 1) {
           recursive = ((BooleanValue) arguments[1].head()).getBooleanValue();
