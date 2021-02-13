@@ -10,7 +10,7 @@
                 </x:call>
                 <x:expect label="contains the relative sequence for dir/example.txt" test="some $x in $x:result
                     satisfies $x = 'dir/example.txt'"/>
-                <x:expect label="every result ends with txt" test="every $x in $x:result satisfies ends-with($x,'txt')"/>
+                <x:expect label="every result ends with txt" test="every $x in $x:result satisfies ends-with($x,'txt') and count($x:result) &gt; 1"/>
                 <x:expect label="'contains recursive dir/sub-dir/example2.txt (recursive list true)" test="some $x in $x:result
                     satisfies $x = 'dir/sub-dir/example2.txt'"/>
             </x:scenario>

@@ -140,7 +140,7 @@ public class List extends FileFunctionDefinition {
         return FileVisitResult.CONTINUE;
       }
       match(dir);
-      if (recursive && (matcher == null || matcher.matches(dir.getFileName()))) {
+      if (recursive) {
         return FileVisitResult.CONTINUE;
       }
       else {
