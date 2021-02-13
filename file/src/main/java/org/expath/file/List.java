@@ -90,6 +90,7 @@ public class List extends FileFunctionDefinition {
     private final ArrayList<StringValue> stringValues = new ArrayList<>();
 
     private final PathMatcher matcher;
+    private final PathMatcher ignorematcher = FileSystems.getDefault().getPathMatcher("glob:*_files");
     private final boolean recursive;
     private final Path root;
 
@@ -112,19 +113,15 @@ public class List extends FileFunctionDefinition {
     }
 
     private void match(Path file) {
-      //Path name = file.getFileName();
       if ((matcher == null || matcher.matches(file.getFileName()))) {
-        //    if (file.isAbsolute()) {
-        stringValues.add(StringValue.makeStringValue(file.toString()));
+        stringValues.add(StringValue.makeStringValue(root.relativize(file).toString()));
 
       }
     }
 
     private void match(Path file, Path filename) {
-      //Path name = file.getFileName();
       if ((matcher == null || matcher.matches(file.getFileName()))) {
-        //    if (file.isAbsolute()) {
-        stringValues.add(StringValue.makeStringValue(file.toString()));
+        stringValues.add(StringValue.makeStringValue(root.relativize(file).toString()));
       }
     }
 
@@ -136,11 +133,8 @@ public class List extends FileFunctionDefinition {
 
     @Override
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-   //   if (dir.equals(root)) {
-   //     return FileVisitResult.CONTINUE;
-    //  }
       match(dir);
-      if (recursive) {
+      if (recursive && !ignorematcher.matches(dir)) {
         return FileVisitResult.CONTINUE;
       }
       else {
@@ -152,10 +146,6 @@ public class List extends FileFunctionDefinition {
     public FileVisitResult visitFileFailed(Path file, IOException exc) {
       return FileVisitResult.CONTINUE;
     }
-
-    // public ArrayList<Path> getPaths() {
-    //   return this.paths;
-    // }
 
     public ArrayList<StringValue> getStringValues() {
       return this.stringValues;
@@ -173,7 +163,6 @@ public class List extends FileFunctionDefinition {
           throw new FileException(String.format("Path \"%s\" does not point to an existing directory",
                   file.toAbsolutePath()), FileException.ERROR_PATH_NOT_DIRECTORY);
         }
-       // file = file.toAbsolutePath();
         boolean recursive = false;
         if (arguments.length > 1) {
           recursive = ((BooleanValue) arguments[1].head()).getBooleanValue();
@@ -182,6 +171,7 @@ public class List extends FileFunctionDefinition {
         if (arguments.length > 2) {
           pattern = ( arguments[2].head()).getStringValue();
         }
+
         Finder finder = new Finder(file, recursive, pattern);
         Files.walkFileTree(file, finder);
 
