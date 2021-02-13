@@ -11,6 +11,8 @@
                     <x:param select="'*txt'"/>
                 </x:call>
                 <x:expect label="contains the relative sequence for dir/example.txt" test="some $x in . satisfies $x = 'dir/example.txt'"/>
+                <x:expect label="every result ends with txt" test="every $x in . satisfies ends-with($x,.'txt')"/>
+                <x:expect label="'contains recursive dir/sub-dir/example2.txt" test="some $x in . satisfies $x = 'dir/sub-dir/example2.txt'"/>
             </x:scenario>
             
           
