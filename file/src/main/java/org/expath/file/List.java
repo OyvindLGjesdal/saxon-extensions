@@ -17,16 +17,14 @@ package org.expath.file;
  * limitations under the License.
  */
 
-import java.io.File;
+//import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.PathMatcher;
-import java.nio.file.SimpleFileVisitor;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import org.expath.file.error.FileException;
 
@@ -43,15 +41,15 @@ import net.sf.saxon.value.SequenceType;
 import net.sf.saxon.value.StringValue;
 
 /**
- * XPath extension function that lists all files and directories in a given directory. 
- * 
+ * XPath extension function that lists all files and directories in a given directory.
+ *
  * @author Maarten Kroon
  * @see <a href="http://expath.org/spec/file">EXPath File Module</a>
  */
 public class List extends FileFunctionDefinition {
 
   private static final StructuredQName qName = new StructuredQName("", EXT_NAMESPACEURI, "list");
-    
+
   @Override
   public StructuredQName getFunctionQName() {
     return qName;
@@ -64,113 +62,136 @@ public class List extends FileFunctionDefinition {
 
   @Override
   public int getMaximumNumberOfArguments() {
-    return 3;
+    return 4;
   }
 
   @Override
-  public SequenceType[] getArgumentTypes() {    
+  public SequenceType[] getArgumentTypes() {
     return new SequenceType[] { SequenceType.SINGLE_STRING, SequenceType.SINGLE_BOOLEAN, SequenceType.SINGLE_STRING };
   }
 
   @Override
-  public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {    
+  public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
     return SequenceType.makeSequenceType(BuiltInAtomicType.STRING, StaticProperty.ALLOWS_ZERO_OR_MORE);
   }
-  
+
   @Override
-  public boolean hasSideEffects() {    
+  public boolean hasSideEffects() {
     return false;
   }
 
   @Override
-  public ExtensionFunctionCall makeCallExpression() {    
+  public ExtensionFunctionCall makeCallExpression() {
     return new ListCall();
   }
-  
+
   private static class Finder extends SimpleFileVisitor<Path> {
 
-    private ArrayList<Path> paths = new ArrayList<Path>();
+    private final ArrayList<StringValue> stringValues = new ArrayList<>();
+
     private final PathMatcher matcher;
     private final boolean recursive;
     private final Path root;
-   
+
+
     public Finder(Path root, boolean recursive, String pattern) {
       this.root = root;
       this.recursive = recursive;
       if (pattern == null) {
         this.matcher = null;
       } else {
-        this.matcher = FileSystems.getDefault().getPathMatcher("glob:" + pattern);
+        String matcherString;
+        if (pattern.startsWith("regex:")) {
+          matcherString = pattern;
+        }
+        else {
+          matcherString = "glob:" + pattern;
+        }
+        this.matcher = FileSystems.getDefault().getPathMatcher(matcherString);
       }
     }
 
     private void match(Path file) {
-      Path name = file.getFileName();
-      if (name != null && (matcher == null || matcher.matches(name))) {
-        paths.add(file);
+      //Path name = file.getFileName();
+      if ((matcher == null || matcher.matches(file.getFileName()))) {
+        //    if (file.isAbsolute()) {
+        stringValues.add(StringValue.makeStringValue(root.relativize(file).toString()));
+
       }
     }
-        
+
+    private void match(Path file, Path filename) {
+      //Path name = file.getFileName();
+      if ((matcher == null || matcher.matches(file.getFileName()))) {
+        //    if (file.isAbsolute()) {
+        stringValues.add(StringValue.makeStringValue(root.relativize(file).toString()));
+      }
+    }
+
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-      match(file);      
+      match(file);
       return FileVisitResult.CONTINUE;
     }
-    
+
     @Override
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
       if (dir.equals(root)) {
         return FileVisitResult.CONTINUE;
-      }      
+      }
       match(dir);
-      if (recursive) {
+      if (recursive && (matcher == null || matcher.matches(dir.getFileName()))) {
         return FileVisitResult.CONTINUE;
-      } 
-      return FileVisitResult.SKIP_SUBTREE;            
+      }
+      else {
+        return FileVisitResult.SKIP_SUBTREE;
+      }
     }
 
     @Override
-    public FileVisitResult visitFileFailed(Path file, IOException exc) { 
+    public FileVisitResult visitFileFailed(Path file, IOException exc) {
       return FileVisitResult.CONTINUE;
     }
-    
-    public ArrayList<Path> getPaths() {
-      return this.paths;
+
+    // public ArrayList<Path> getPaths() {
+    //   return this.paths;
+    // }
+
+    public ArrayList<StringValue> getStringValues() {
+      return this.stringValues;
     }
   }
-  
+
   private static class ListCall extends FileExtensionFunctionCall {
-        
+
     @Override
-    public ZeroOrMore<StringValue> call(XPathContext context, Sequence[] arguments) throws XPathException {      
-      try {         
-        File dir = getFile(((StringValue) arguments[0].head()).getStringValue());
-        if (!dir.isDirectory()) {
-          throw new FileException(String.format("Path \"%s\" does not point to an existing directory", 
-              dir.getAbsolutePath()), FileException.ERROR_PATH_NOT_DIRECTORY);         
+    public ZeroOrMore<StringValue> call(XPathContext context, Sequence[] arguments) throws XPathException {
+
+      try {
+        Path file = Paths.get(arguments[0].head().getStringValue());
+        if (!Files.isDirectory(file)) {
+          throw new FileException(String.format("Path \"%s\" does not point to an existing directory",
+                  file.toAbsolutePath()), FileException.ERROR_PATH_NOT_DIRECTORY);
         }
-        Path rootPath = dir.toPath().toAbsolutePath();
+        file = file.toAbsolutePath();
         boolean recursive = false;
         if (arguments.length > 1) {
           recursive = ((BooleanValue) arguments[1].head()).getBooleanValue();
         }
         String pattern = null;
         if (arguments.length > 2) {
-          pattern = ((StringValue) arguments[2].head()).getStringValue();          
-        }               
-        Finder finder = new Finder(rootPath, recursive, pattern);
-        Files.walkFileTree(dir.toPath(), finder);
-       
-        ArrayList<StringValue> result = new ArrayList<StringValue>();
-        for (Path path : finder.getPaths()) {                                                           
-          result.add(new StringValue(rootPath.relativize(path).toString()));
+          pattern = ( arguments[2].head()).getStringValue();
         }
-        return new ZeroOrMore<StringValue>(result.toArray(new StringValue[result.size()]));
+        Finder finder = new Finder(file, recursive, pattern);
+        Files.walkFileTree(file, finder);
+
+        ArrayList<StringValue> result = finder.getStringValues();
+        return new ZeroOrMore<>(finder.getStringValues().toArray(new StringValue[result.size()]));
       } catch (FileException fe) {
         throw fe;
       } catch (Exception e) {
-        throw new FileException("Other file error", e, FileException.ERROR_IO);
+        throw new  FileException("Other file error", e, FileException.ERROR_IO);
       }
-    } 
+    }
   }
 }
