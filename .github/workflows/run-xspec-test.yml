@@ -22,7 +22,7 @@ jobs:
     - run: cp file/target/*uber.jar $SAXON_HOME/lib/
     - run: ls $SAXON_HOME $XSPEC_HOME
     - run: cd $XSPEC_HOME && ant -lib $SAXON_HOME -lib $SAXON_HOME/lib -Dxspec.xml=$GITHUB_WORKSPACE/xspec/file.xspec -Dsaxon.custom.options="-config:$GITHUB_WORKSPACE/xspec/config.xml"
-      continue-on-error: true
+      if: succeeded() || failed()
     - run: cd $GITHUB_WORKSPACE && mkdir report && cp $GITHUB_WORKSPACE/xspec/xspec/file-result.html $GITHUB_WORKSPACE/report
     
     - name: Deploy
