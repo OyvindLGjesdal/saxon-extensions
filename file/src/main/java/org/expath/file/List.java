@@ -115,7 +115,7 @@ public class List extends FileFunctionDefinition {
       //Path name = file.getFileName();
       if ((matcher == null || matcher.matches(file.getFileName()))) {
         //    if (file.isAbsolute()) {
-        stringValues.add(StringValue.makeStringValue(root.relativize(file).toString()));
+        stringValues.add(StringValue.makeStringValue(file.toString()));
 
       }
     }
@@ -124,7 +124,7 @@ public class List extends FileFunctionDefinition {
       //Path name = file.getFileName();
       if ((matcher == null || matcher.matches(file.getFileName()))) {
         //    if (file.isAbsolute()) {
-        stringValues.add(StringValue.makeStringValue(root.relativize(file).toString()));
+        stringValues.add(StringValue.makeStringValue(file.toString()));
       }
     }
 
@@ -173,7 +173,7 @@ public class List extends FileFunctionDefinition {
           throw new FileException(String.format("Path \"%s\" does not point to an existing directory",
                   file.toAbsolutePath()), FileException.ERROR_PATH_NOT_DIRECTORY);
         }
-        file = file.toAbsolutePath();
+       // file = file.toAbsolutePath();
         boolean recursive = false;
         if (arguments.length > 1) {
           recursive = ((BooleanValue) arguments[1].head()).getBooleanValue();
