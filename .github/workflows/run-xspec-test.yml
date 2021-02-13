@@ -33,4 +33,4 @@ jobs:
         folder: report # The folder the action should deploy.
       if: success() || failure()
     
-    - run echo "see failed test result in https://oyvindlgjesdal.github.io/saxon-extensions/file-result.html"
+    - run: echo "see failed test result in https://oyvindlgjesdal.github.io/saxon-extensions/file-result.html"
