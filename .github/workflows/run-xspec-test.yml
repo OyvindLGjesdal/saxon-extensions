@@ -24,10 +24,12 @@ jobs:
     - run: cd $XSPEC_HOME && ant -lib $SAXON_HOME -lib $SAXON_HOME/lib -Dxspec.xml=$GITHUB_WORKSPACE/xspec/file.xspec -Dsaxon.custom.options="-config:$GITHUB_WORKSPACE/xspec/config.xml"
       if: success() || failure()
     - run: cd $GITHUB_WORKSPACE && mkdir report && cp $GITHUB_WORKSPACE/xspec/xspec/file-result.html $GITHUB_WORKSPACE/report
+      if: success() || failure()
     
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@4.0.0
       with:
         branch: gh-pages # The branch the action should deploy to.
         folder: report # The folder the action should deploy.
+      if: success() || failure()
 
