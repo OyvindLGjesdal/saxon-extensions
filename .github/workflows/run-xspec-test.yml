@@ -26,8 +26,8 @@ jobs:
     - run: cd $GITHUB_WORKSPACE && mkdir report && cp $GITHUB_WORKSPACE/xspec/xspec/file-result.html $GITHUB_WORKSPACE/report
     
     - name: Deploy
-       uses: JamesIves/github-pages-deploy-action@4.0.0
-       with:
-         branch: gh-pages # The branch the action should deploy to.
-         folder: report # The folder the action should deploy.
+      uses: JamesIves/github-pages-deploy-action@4.0.0
+      with:
+        branch: gh-pages # The branch the action should deploy to.
+        folder: report # The folder the action should deploy.
 
