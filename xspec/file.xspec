@@ -10,7 +10,7 @@
                     <x:param select="true()"/>
                     <x:param select="'*txt'"/>
                 </x:call>
-                <x:expect label="contains the relative sequence for dir/example.txt" select="some $x in . satisfies $x = 'dir/example.txt'"/>
+                <x:expect label="contains the relative sequence for dir/example.txt" test="some $x in . satisfies $x = 'dir/example.txt'"/>
             </x:scenario>
             
           
